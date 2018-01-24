@@ -790,11 +790,20 @@ static int qcom_km_open(const hw_module_t* module, const char* name,
         return -1;
     }
     ALOGD("keymaster app got loaded at attempt number %d", attempt_num);
+#ifdef USE_SKEYMAST
+    ret = (*km_handle->QSEECom_start_app)((struct QSEECom_handle **)&km_handle->qseecom,
+                        "/vendor/firmware/keymaster", "skeymast", KM_SB_LENGTH);
+    if(ret)
+        ret = (*km_handle->QSEECom_start_app)((struct QSEECom_handle **)&km_handle->qseecom,
+                        "/firmware/image", "skeymast", KM_SB_LENGTH);
+#else
     ret = (*km_handle->QSEECom_start_app)((struct QSEECom_handle **)&km_handle->qseecom,
                         "/vendor/firmware/keymaster", "keymaster", KM_SB_LENGTH);
     if(ret)
         ret = (*km_handle->QSEECom_start_app)((struct QSEECom_handle **)&km_handle->qseecom,
-                        "/firmware/image", "keymaste", KM_SB_LENGTH);
+			"/firmware/image", "keymaste", KM_SB_LENGTH);
+#endif
+
     if (ret) {
         ALOGE("Loading keymaster app failed");
         free(km_handle);

@@ -19,6 +19,10 @@ ifeq ($(TARGET_KEYMASTER_WAIT_FOR_QSEE),true)
 keymaster-def += -DWAIT_FOR_QSEE
 endif
 
+ifeq ($(TARGET_KEYMASTER_USE_SKEYMAST),true)
+keymaster-def += -DUSE_SKEYMAST
+endif
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := keystore.$(TARGET_BOARD_PLATFORM)
